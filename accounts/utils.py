@@ -1,4 +1,6 @@
 import threading
+import secrets
+import string
 from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -6,7 +8,10 @@ from core.utils import send_html_email
 
 
 def generate_password():
-    return get_user_model().objects.make_random_password()
+    """Generate a random password using Python's secrets module"""
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(secrets.choice(alphabet) for i in range(12))
+    return password
 
 
 def generate_student_id():
@@ -54,7 +59,7 @@ def send_new_account_email(user, password):
     else:
         template_name = "accounts/email/new_lecturer_account_confirmation.html"
     email = {
-        "subject": "Your SkyLearn account confirmation and credentials",
+        "subject": "Your Z-Learn account confirmation and credentials",
         "recipient_list": [user.email],
         "template_name": template_name,
         "context": {"user": user, "password": password},
